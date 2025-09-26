@@ -20,7 +20,7 @@ resource "aws_security_group" "this" {
   vpc_id      = var.vpc_id
 
   egress {
-    from_port   = 0
+    from_port   = 0 
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
@@ -72,7 +72,7 @@ resource "random_password" "this" {
   count            = var.password == null && var.create_random_password ? 1 : 0
   length           = 24
   special          = true
-  override_characters = "!@#-_+="
+  override_special = "!#-_+="
 }
 
 locals {
@@ -107,7 +107,7 @@ resource "aws_db_instance" "this" {
   monitoring_interval          = var.monitoring_interval
 
   backup_retention_period      = var.backup_retention_days
-  preferred_backup_window      = var.backup_window
+  backup_window                = var.backup_window
   maintenance_window           = var.maintenance_window
   copy_tags_to_snapshot        = true
 
@@ -146,4 +146,3 @@ resource "aws_secretsmanager_secret_version" "this" {
   })
   depends_on = [aws_db_instance.this]
 }
-
