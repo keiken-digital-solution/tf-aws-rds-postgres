@@ -28,10 +28,7 @@ data "terraform_remote_state" "platform" {
 }
 
 module "app_db" {
-  # If using this as a standalone repo, reference it via Git and pin a tag
-  # source = "git::https://github.com/your-org/tf-aws-rds-postgres.git?ref=v0.1.0"
-  # If this module lives locally inside a mono-repo, use a relative path instead
-  source = "../tf-aws-rds-postgres"
+  source = "git::https://github.com/keiken-digital-solution/tf-aws-rds-postgres.git"
 
   name           = "keiken-dev-myapp-db"
   vpc_id         = data.terraform_remote_state.platform.outputs.vpc_id
