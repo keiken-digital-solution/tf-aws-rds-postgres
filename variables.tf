@@ -6,7 +6,7 @@ variable "name" {
 variable "engine_version" {
   description = "PostgreSQL engine version (major.minor)."
   type        = string
-  default     = "15.5"
+  default     = "16.3"
 }
 
 variable "instance_class" {
@@ -202,4 +202,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
