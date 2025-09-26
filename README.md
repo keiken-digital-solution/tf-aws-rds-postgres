@@ -39,7 +39,7 @@ module "app_db" {
   # ingress_security_group_ids = [aws_security_group.app_sg.id]
 
   # Sane defaults, override as needed
-  engine_version             = "15.5"
+  engine_version             = "16.3"
   instance_class             = "db.t3.medium"
   multi_az                   = true
   backup_retention_days      = 7
@@ -65,7 +65,7 @@ output "db_endpoint" {
 - name: Base name for resources (required)
 - vpc_id: Target VPC ID (required)
 - subnet_ids: Private subnet IDs (required)
-- engine_version: Postgres version (default: 15.5)
+- engine_version: Postgres version (default: 16.3)
 - instance_class: RDS instance class (default: db.t3.medium)
 - allocated_storage: Initial storage GB (default: 50)
 - max_allocated_storage: Autoscaling max GB (default: 200)
