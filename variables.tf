@@ -106,7 +106,7 @@ variable "monitoring_interval" {
   default     = 0
 }
 
-variable "backup_retention_period" {
+variable "backup_retention_days" {
   description = "Number of days to retain automated backups."
   type        = number
   default     = 30

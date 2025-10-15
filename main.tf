@@ -106,7 +106,7 @@ resource "aws_db_instance" "this" {
 
   monitoring_interval = var.monitoring_interval
 
-  backup_retention_period = var.backup_retention_period
+  backup_retention_period = var.backup_retention_days
   backup_window           = var.backup_window
   maintenance_window      = var.maintenance_window
   copy_tags_to_snapshot   = true
