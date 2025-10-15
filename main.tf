@@ -69,7 +69,7 @@ resource "aws_db_parameter_group" "this" {
 }
 
 resource "random_password" "this" {
-  count            = var.password == null && var.create_random_password ? 1 : 0
+  count            = var.password == null ? 1 : 0
   length           = 24
   special          = true
   override_special = "!#-_+="
@@ -93,7 +93,7 @@ resource "aws_db_instance" "this" {
   vpc_security_group_ids       = [aws_security_group.this.id]
   port                         = 5432
   publicly_accessible          = var.publicly_accessible
-  multi_az                     = var.multi_az
+  multi_az                     = true
 
   allocated_storage            = var.allocated_storage
   max_allocated_storage        = var.max_allocated_storage
@@ -106,12 +106,12 @@ resource "aws_db_instance" "this" {
 
   monitoring_interval          = var.monitoring_interval
 
-  backup_retention_period      = var.backup_retention_days
+  backup_retention_period      = 30
   backup_window                = var.backup_window
   maintenance_window           = var.maintenance_window
   copy_tags_to_snapshot        = true
 
-  deletion_protection          = var.deletion_protection
+  deletion_protection          = true
   skip_final_snapshot          = var.skip_final_snapshot
   final_snapshot_identifier    = var.skip_final_snapshot ? null : "${var.final_snapshot_identifier_prefix}-${var.name}"
 
@@ -124,17 +124,15 @@ resource "aws_db_instance" "this" {
   tags = merge(var.tags, { Name = var.name })
 }
 
-# Optional Secrets Manager secret with connection details
+# Secrets Manager secret with connection details (always managed)
 resource "aws_secretsmanager_secret" "this" {
-  count       = var.manage_secret ? 1 : 0
   name        = local.secret_name
   description = "Credentials for ${var.name} Postgres"
   tags        = merge(var.tags, { Name = local.secret_name })
 }
 
 resource "aws_secretsmanager_secret_version" "this" {
-  count     = var.manage_secret ? 1 : 0
-  secret_id = aws_secretsmanager_secret.this[0].id
+  secret_id = aws_secretsmanager_secret.this.id
   secret_string = jsonencode({
     engine   = "postgres",
     host     = aws_db_instance.this.address,

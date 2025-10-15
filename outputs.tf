@@ -34,7 +34,7 @@ output "parameter_group_name" {
 }
 
 output "secret_arn" {
-  value       = try(aws_secretsmanager_secret.this[0].arn, null)
-  description = "ARN of the Secrets Manager secret with credentials (if managed)."
+  value       = aws_secretsmanager_secret.this.arn
+  description = "ARN of the Secrets Manager secret with credentials (always managed)."
 }
 
