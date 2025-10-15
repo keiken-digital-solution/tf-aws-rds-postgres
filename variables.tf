@@ -33,6 +33,12 @@ variable "storage_type" {
   default     = "gp3"
 }
 
+variable "multi_az" {
+  description = "Whether to deploy a Multi-AZ instance for high availability."
+  type        = bool
+  default     = true
+}
+
 variable "publicly_accessible" {
   description = "Whether the instance is publicly accessible (should be false)."
   type        = bool
@@ -52,10 +58,22 @@ variable "username" {
 }
 
 variable "password" {
-  description = "Master password. If null and create_random_password = true, a random password will be generated."
+  description = "Master password. If null, a random password will be generated."
   type        = string
   default     = null
   sensitive   = true
+}
+
+variable "create_random_password" {
+  description = "Generate a random password when password is null (recommended)."
+  type        = bool
+  default     = true
+}
+
+variable "manage_secret" {
+  description = "Create and manage an AWS Secrets Manager secret with connection details (recommended)."
+  type        = bool
+  default     = true
 }
 
 variable "secret_name" {
@@ -88,6 +106,12 @@ variable "monitoring_interval" {
   default     = 0
 }
 
+variable "backup_retention_period" {
+  description = "Number of days to retain automated backups."
+  type        = number
+  default     = 30
+}
+
 variable "backup_window" {
   description = "Preferred backup window (UTC, e.g., 03:00-06:00)."
   type        = string
@@ -98,6 +122,12 @@ variable "maintenance_window" {
   description = "Preferred maintenance window (UTC, e.g., Sun:06:00-Sun:07:00)."
   type        = string
   default     = null
+}
+
+variable "deletion_protection" {
+  description = "Protect the instance from deletion. Set to false for dev/test environments."
+  type        = bool
+  default     = true
 }
 
 variable "skip_final_snapshot" {
