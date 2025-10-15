@@ -1,6 +1,6 @@
 locals {
-  # Derive parameter group family if not provided, e.g., engine 15.5 => postgres15
-  engine_major             = try(element(split(".", var.engine_version), 0), "15")
+  # Derive parameter group family if not provided, e.g., engine 16.8 => postgres16
+  engine_major             = try(element(split(".", var.engine_version), 0), "16")
   derived_parameter_family = "postgres${local.engine_major}"
   parameter_group_family   = coalesce(var.parameter_group_family, local.derived_parameter_family)
 
