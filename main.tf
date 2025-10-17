@@ -1,8 +1,8 @@
 locals {
-  # Derive parameter group family if not provided, e.g., engine 15.5 => postgres15
-  engine_major              = try(element(split(".", var.engine_version), 0), "15")
-  derived_parameter_family  = "postgres${local.engine_major}"
-  parameter_group_family    = coalesce(var.parameter_group_family, local.derived_parameter_family)
+  # Derive parameter group family if not provided, e.g., engine 16.8 => postgres16
+  engine_major             = try(element(split(".", var.engine_version), 0), "16")
+  derived_parameter_family = "postgres${local.engine_major}"
+  parameter_group_family   = coalesce(var.parameter_group_family, local.derived_parameter_family)
 
   # Secret name fallback
   secret_name = coalesce(var.secret_name, "${var.name}-credentials")
@@ -20,10 +20,10 @@ resource "aws_security_group" "this" {
   vpc_id      = var.vpc_id
 
   egress {
-    from_port   = 0 
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 
@@ -80,46 +80,46 @@ locals {
 }
 
 resource "aws_db_instance" "this" {
-  identifier                   = var.name
-  engine                       = "postgres"
-  engine_version               = var.engine_version
+  identifier     = var.name
+  engine         = "postgres"
+  engine_version = var.engine_version
 
-  instance_class               = var.instance_class
-  db_name                      = var.db_name
-  username                     = var.username
-  password                     = local.master_password
+  instance_class = var.instance_class
+  db_name        = var.db_name
+  username       = var.username
+  password       = local.master_password
 
-  db_subnet_group_name         = aws_db_subnet_group.this.name
-  vpc_security_group_ids       = [aws_security_group.this.id]
-  port                         = 5432
-  publicly_accessible          = var.publicly_accessible
-  multi_az                     = var.multi_az
+  db_subnet_group_name   = aws_db_subnet_group.this.name
+  vpc_security_group_ids = [aws_security_group.this.id]
+  port                   = 5432
+  publicly_accessible    = var.publicly_accessible
+  multi_az               = var.multi_az
 
-  allocated_storage            = var.allocated_storage
-  max_allocated_storage        = var.max_allocated_storage
-  storage_type                 = var.storage_type
-  storage_encrypted            = true
-  kms_key_id                   = var.kms_key_id
+  allocated_storage     = var.allocated_storage
+  max_allocated_storage = var.max_allocated_storage
+  storage_type          = var.storage_type
+  storage_encrypted     = true
+  kms_key_id            = var.kms_key_id
 
-  performance_insights_enabled     = var.performance_insights_enabled
-  performance_insights_kms_key_id  = var.performance_insights_kms_key_id
+  performance_insights_enabled    = var.performance_insights_enabled
+  performance_insights_kms_key_id = var.performance_insights_kms_key_id
 
-  monitoring_interval          = var.monitoring_interval
+  monitoring_interval = var.monitoring_interval
 
-  backup_retention_period      = var.backup_retention_days
-  backup_window                = var.backup_window
-  maintenance_window           = var.maintenance_window
-  copy_tags_to_snapshot        = true
+  backup_retention_period = var.backup_retention_days
+  backup_window           = var.backup_window
+  maintenance_window      = var.maintenance_window
+  copy_tags_to_snapshot   = true
 
-  deletion_protection          = var.deletion_protection
-  skip_final_snapshot          = var.skip_final_snapshot
-  final_snapshot_identifier    = var.skip_final_snapshot ? null : "${var.final_snapshot_identifier_prefix}-${var.name}"
+  deletion_protection       = var.deletion_protection
+  skip_final_snapshot       = var.skip_final_snapshot
+  final_snapshot_identifier = var.skip_final_snapshot ? null : "${var.final_snapshot_identifier_prefix}-${var.name}"
 
   iam_database_authentication_enabled = var.iam_auth_enabled
 
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
 
-  apply_immediately            = var.apply_immediately
+  apply_immediately = var.apply_immediately
 
   tags = merge(var.tags, { Name = var.name })
 }
