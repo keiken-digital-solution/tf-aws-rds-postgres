@@ -1,6 +1,6 @@
 # tf-aws-rds-postgres
 
-Reusable Terraform module to provision an AWS RDS PostgreSQL instance for product teams on the KPP platform. It follows platform conventions: private subnets, restrictive security groups, encryption, CloudWatch log exports, and optional Secrets Manager integration.
+Reusable Terraform module to provision an AWS RDS PostgreSQL instance with best practices: private subnets, restrictive security groups, encryption, CloudWatch log exports, and optional Secrets Manager integration.
 
 ## Features
 
@@ -15,24 +15,24 @@ Reusable Terraform module to provision an AWS RDS PostgreSQL instance for produc
 
 ## Usage
 
-Basic example (using platform outputs via remote state):
+Basic example (using VPC outputs via remote state):
 
 ```hcl
-data "terraform_remote_state" "platform" {
+data "terraform_remote_state" "network" {
   backend = "s3"
   config = {
-    bucket = "keiken-dev-tfstate"
-    key    = "tfstate-platform/primary.tfstate"
-    region = "eu-west-3"
+    bucket = "your-terraform-state-bucket"
+    key    = "network/terraform.tfstate"
+    region = "us-east-1"
   }
 }
 
 module "app_db" {
-  source = "git::https://github.com/keiken-digital-solution/tf-aws-rds-postgres.git"
+  source = "git::https://github.com/YOUR-ORG/tf-aws-rds-postgres.git"
 
-  name           = "keiken-dev-myapp-db"
-  vpc_id         = data.terraform_remote_state.platform.outputs.vpc_id
-  subnet_ids     = data.terraform_remote_state.platform.outputs.private_subnets
+  name           = "myapp-dev-db"
+  vpc_id         = data.terraform_remote_state.network.outputs.vpc_id
+  subnet_ids     = data.terraform_remote_state.network.outputs.private_subnets
 
   # Access from EKS nodes/pods via the VPC CIDR or from a specific SG
   ingress_cidrs               = ["10.10.0.0/16"]
@@ -147,4 +147,4 @@ If restoring from a snapshot, this module currently focuses on fresh instances. 
 
 - This module manages a single RDS instance (not Aurora). For Aurora Postgres, use a dedicated module.
 - Ensure RDS network access: use `ingress_cidrs` or `ingress_security_group_ids` to allow from your app.
-- The platform VPC exposes AWS APIs privately via VPC endpoints; RDS endpoints remain inside the VPC.
+- RDS endpoints remain private inside the VPC. Consider using VPC endpoints for AWS APIs if needed.
