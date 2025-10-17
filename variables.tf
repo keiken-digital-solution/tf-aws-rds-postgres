@@ -6,7 +6,7 @@ variable "name" {
 variable "engine_version" {
   description = "PostgreSQL engine version (major.minor)."
   type        = string
-  default     = "16.3"
+  default     = "16.8"
 }
 
 variable "instance_class" {
@@ -34,7 +34,7 @@ variable "storage_type" {
 }
 
 variable "multi_az" {
-  description = "Whether to deploy a Multi-AZ instance."
+  description = "Whether to deploy a Multi-AZ instance for high availability."
   type        = bool
   default     = true
 }
@@ -58,20 +58,20 @@ variable "username" {
 }
 
 variable "password" {
-  description = "Master password. If null and create_random_password = true, a random password will be generated."
+  description = "Master password. If null, a random password will be generated."
   type        = string
   default     = null
   sensitive   = true
 }
 
 variable "create_random_password" {
-  description = "Generate a random password when password is null."
+  description = "Generate a random password when password is null (recommended)."
   type        = bool
   default     = true
 }
 
 variable "manage_secret" {
-  description = "Create and manage an AWS Secrets Manager secret containing connection details."
+  description = "Create and manage an AWS Secrets Manager secret with connection details (recommended)."
   type        = bool
   default     = true
 }
@@ -109,7 +109,7 @@ variable "monitoring_interval" {
 variable "backup_retention_days" {
   description = "Number of days to retain automated backups."
   type        = number
-  default     = 7
+  default     = 30
 }
 
 variable "backup_window" {
@@ -125,7 +125,7 @@ variable "maintenance_window" {
 }
 
 variable "deletion_protection" {
-  description = "Protect the instance from deletion."
+  description = "Protect the instance from deletion. Set to false for dev/test environments."
   type        = bool
   default     = true
 }
